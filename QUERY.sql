@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS Users;
 CREATE TABLE Users (
     user_id SERIAL PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
     role VARCHAR(100) NOT NULL CHECK (role IN ('Ticket Manager', 'Football Fan')),
     phone_number VARCHAR(20)
 );
