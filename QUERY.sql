@@ -14,7 +14,7 @@ CREATE TABLE Users (
     user_id SERIAL PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
-    role VARCHAR(50) NOT NULL CHECK (role IN ('Ticket Manager', 'Football Fan')),
+    role VARCHAR(100) NOT NULL CHECK (role IN ('Ticket Manager', 'Football Fan')),
     phone_number VARCHAR(20)
 );
 
@@ -26,18 +26,19 @@ CREATE TABLE Matches (
     fixture VARCHAR(255) NOT NULL,
     tournament_category VARCHAR(255),
     base_ticket_price DECIMAL(10, 2) CHECK (base_ticket_price >= 0),
-    match_status VARCHAR(50) CHECK (match_status IN ('Available', 'Selling Fast', 'Sold Out', 'Postponed'))
+    match_status VARCHAR(100) NOT NULL CHECK (match_status IN ('Available', 'Selling Fast', 'Sold Out', 'Postponed'))
 );
+
 
 -- =========================================================================
 -- 3. CREATE BOOKINGS TABLE
 -- =========================================================================
 CREATE TABLE Bookings (
     booking_id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES Users(user_id),
-    match_id INT REFERENCES Matches(match_id),
-    seat_number VARCHAR(50),
-    payment_status VARCHAR(50) CHECK (payment_status IN ('Pending', 'Confirmed', 'Cancelled', 'Refunded')),
+    user_id INT NOT NULL REFERENCES Users(user_id),
+    match_id INT NOT NULL REFERENCES Matches(match_id),
+    seat_number VARCHAR(255),
+    payment_status VARCHAR(100) CHECK (payment_status IN ('Pending', 'Confirmed', 'Cancelled', 'Refunded')),
     total_cost DECIMAL(10, 2) CHECK (total_cost >= 0)
 );
 
@@ -74,27 +75,21 @@ INSERT INTO Bookings (booking_id, user_id, match_id, seat_number, payment_status
 (505, 3, 102, 'C-20', 'Pending', 120.00);
 
 
--- =========================================================================
--- Query 1: Retrieve all upcoming football matches belonging to the 'Champions League' where the match status is 'Available'.
--- =========================================================================
+-- Query 1:
 SELECT match_id, fixture, base_ticket_price
 FROM Matches
 WHERE tournament_category = 'Champions League' 
   AND match_status = 'Available';
 
 
--- =========================================================================
--- Query 2: Search for all users whose full names start with 'Tanvir' or contain the phrase 'Haque' (case-insensitive).
--- =========================================================================
+-- Query 2:
 SELECT user_id, full_name, email
 FROM Users
 WHERE full_name ILIKE 'Tanvir%' 
    OR full_name ILIKE '%Haque%';
 
 
--- =========================================================================
--- Query 3: Retrieve all booking records where the payment status is missing (NULL), replacing the empty result with 'Action Required'.
--- =========================================================================
+-- Query 3:
 SELECT 
     booking_id, 
     user_id, 
@@ -106,9 +101,7 @@ WHERE
     payment_status IS NULL;
 
 
--- =========================================================================
--- Query 4: Retrieve match booking details along with the User's full name and the scheduled Match fixture teams.
--- =========================================================================
+-- Query 4:
 SELECT 
     b.booking_id, 
     u.full_name, 
@@ -122,9 +115,7 @@ INNER JOIN
     Matches m ON b.match_id = m.match_id;
 
 
--- ==========================================================================
--- Query 5: Display a comprehensive list of all users and their booking IDs, ensuring that fans who have never bought a ticket are still listed.
--- ==========================================================================
+-- Query 5:
 SELECT 
     u.user_id, 
     u.full_name, 
@@ -135,9 +126,7 @@ LEFT JOIN
     Bookings b ON u.user_id = b.user_id;
 
 
--- =========================================================================
--- Query 6: Find all ticket bookings where the total cost is strictly higher than the average cost of all ticket bookings.
--- =========================================================================
+-- Query 6:
 SELECT 
     booking_id, 
     match_id, 
@@ -148,9 +137,7 @@ WHERE
     total_cost > (SELECT AVG(total_cost) FROM Bookings);
 
 
--- =========================================================================
--- Query 7: Retrieve the top 2 most expensive matches sorted by base ticket price, skipping the absolute highest premium match.
--- =========================================================================
+-- Query 7:
 SELECT 
     match_id, 
     fixture, 
