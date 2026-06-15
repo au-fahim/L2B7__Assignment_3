@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS Matches;
 DROP TABLE IF EXISTS Users;
 
 -- =========================================================================
--- 1. CREATE USERS, MATCHES, AND BOOKINGS TABLE
+-- 1. CREATE USERS, MATCHES, AND BOOKINGS TABLES
 -- =========================================================================
 CREATE TABLE Users (
     user_id SERIAL PRIMARY KEY,
@@ -37,7 +37,7 @@ CREATE TABLE Bookings (
 
 
 -- =========================================================================
--- DATA SEEDING: INSERT SAMPLE DATA INTO USERS, MATCHES, AND BOOKINGS
+-- DATA SEEDING: INSERT SAMPLE DATA INTO USERS, MATCHES, AND BOOKINGS TABLES
 -- =========================================================================
 INSERT INTO Users (user_id, full_name, email, role, phone_number) VALUES
 (1, 'Tanvir Rahman', 'tanvir@mail.com', 'Football Fan', '+8801711111111'),
